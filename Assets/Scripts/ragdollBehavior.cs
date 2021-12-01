@@ -12,14 +12,20 @@ public class ragdollBehavior : MonoBehaviour
     [SerializeField] private ConfigurableJoint _hips;
     [SerializeField] private Animator _ragdollAnimator;
 
+    [SerializeField] private AudioClip _hit1;
+    [SerializeField] private AudioClip _hit2;
+    [SerializeField] private AudioClip _death;
+
     public float _hp = 100;
 
     private float angle = 90;
+    AudioSource _thisSource;
 
     // Start is called before the first frame update
     void Start()
     {
         gameObject.tag = _team;
+        _thisSource = GetComponent<AudioSource>();
 
         switch (_team)
         {
@@ -37,7 +43,7 @@ public class ragdollBehavior : MonoBehaviour
     {
         GameObject closestEnemy = FindClosestEnemy();
         
-        if(closestEnemy != null)
+        if(closestEnemy != null && closestEnemy.tag != "Dead" && gameObject.tag != "Dead")
         {
             //Debug.Log(closestEnemy.name);
             LookAtObject(closestEnemy.transform.GetChild(0).GetChild(1));
@@ -57,9 +63,10 @@ public class ragdollBehavior : MonoBehaviour
         {
             GameObject.Destroy(gameObject);
         }
-        if (_hp <= 0)
+        if (_hp < 0)
         {
             Die();
+            _hp = 0;
         }
     }
 
@@ -82,7 +89,7 @@ public class ragdollBehavior : MonoBehaviour
                 {
                     closest = enemy;
                     distanceToClosest = currentDistance;
-                    if (distanceToClosest <= 2)
+                    if (distanceToClosest <= 2 && gameObject.tag != "Dead")
                     {
                         _ragdollAnimator.SetBool("isPunching", true);
                     }
@@ -150,6 +157,8 @@ public class ragdollBehavior : MonoBehaviour
         Collapse();
         _ragdollAnimator.SetBool("isWalking", false);
         _ragdollAnimator.SetBool("isPunching", false);
+        _thisSource.Stop();
+        _thisSource.PlayOneShot(_death);
     }
     private void Collapse()
     {
@@ -166,6 +175,17 @@ public class ragdollBehavior : MonoBehaviour
     public void TakeDamage(float x)
     {
         _hp -= x;
-        //Debug.Log("TakeDamage function called");
+    }
+
+    public void PlayHitNoise(int i)
+    {
+        if(i == 1 && _thisSource.isPlaying != true)
+        {
+            _thisSource.PlayOneShot(_hit1);
+        }
+        if(i == 2 && _thisSource.isPlaying != true)
+        {
+            _thisSource.PlayOneShot(_hit2);
+        }
     }
 }

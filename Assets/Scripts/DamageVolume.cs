@@ -28,6 +28,7 @@ public class DamageVolume : MonoBehaviour
             if(_collidedRagdollScript != null)
             {
                 _collidedRagdollScript.TakeDamage(_handVelocity);
+                _collidedRagdollScript.PlayHitNoise(Random.Range(1, 2));
             }
         }
     }
