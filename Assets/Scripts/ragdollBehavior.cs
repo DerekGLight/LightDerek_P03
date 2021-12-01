@@ -148,6 +148,8 @@ public class ragdollBehavior : MonoBehaviour
     {
         gameObject.tag = "Dead";
         Collapse();
+        _ragdollAnimator.SetBool("isWalking", false);
+        _ragdollAnimator.SetBool("isPunching", false);
     }
     private void Collapse()
     {
