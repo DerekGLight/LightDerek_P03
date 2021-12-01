@@ -46,6 +46,7 @@ public class ragdollBehavior : MonoBehaviour
         else
         {
             _ragdollAnimator.SetBool("isWalking", false);
+            _ragdollAnimator.SetBool("isPunching", false);
         }
         if (Input.GetKey(KeyCode.F))
         {
@@ -55,6 +56,10 @@ public class ragdollBehavior : MonoBehaviour
         if (_hips.transform.position.y < -200)
         {
             GameObject.Destroy(gameObject);
+        }
+        if (_hp <= 0)
+        {
+            Die();
         }
     }
 
@@ -117,7 +122,6 @@ public class ragdollBehavior : MonoBehaviour
             }
             return closest;
         }
-
         return null;
     }
 
@@ -138,6 +142,23 @@ public class ragdollBehavior : MonoBehaviour
         //Debug.Log(_team + " target direction angle: " + arcTangent);
         //Debug.Log(_team + ": " + newDir);
         _hips.targetRotation = Quaternion.Euler(0, arcTangent, 0);
+    }
+
+    private void Die()
+    {
+        gameObject.tag = "Dead";
+        Collapse();
+    }
+    private void Collapse()
+    {
+        ConfigurableJoint hipJoint = _hips.GetComponent<ConfigurableJoint>();
+
+        JointDrive jDrive1 = hipJoint.angularXDrive;
+        JointDrive jDrive2 = hipJoint.angularYZDrive;
+        jDrive1.positionSpring = 0f;
+        jDrive2.positionSpring = 0f;
+        hipJoint.angularXDrive = jDrive1;
+        hipJoint.angularYZDrive = jDrive2;
     }
 
     public void TakeDamage(float x)

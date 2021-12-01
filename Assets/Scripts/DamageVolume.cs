@@ -25,7 +25,10 @@ public class DamageVolume : MonoBehaviour
         ragdollBehavior _collidedRagdollScript = _collidedRagdollTransform.GetComponent<ragdollBehavior>();
         if(_collidedRagdollTransform.tag != transform.root.tag)
         {
-            _collidedRagdollScript.TakeDamage(_handVelocity);
+            if(_collidedRagdollScript != null)
+            {
+                _collidedRagdollScript.TakeDamage(_handVelocity);
+            }
         }
     }
 }
