@@ -12,6 +12,8 @@ public class ragdollBehavior : MonoBehaviour
     [SerializeField] private ConfigurableJoint _hips;
     [SerializeField] private Animator _ragdollAnimator;
 
+    public float _hp = 100;
+
     private float angle = 90;
 
     // Start is called before the first frame update
@@ -49,6 +51,10 @@ public class ragdollBehavior : MonoBehaviour
         {
             _hips.targetRotation = Quaternion.Euler(0, angle, 0); //Testing rotation of fighters
             angle++;
+        }
+        if (_hips.transform.position.y < -200)
+        {
+            GameObject.Destroy(gameObject);
         }
     }
 
@@ -132,5 +138,11 @@ public class ragdollBehavior : MonoBehaviour
         //Debug.Log(_team + " target direction angle: " + arcTangent);
         //Debug.Log(_team + ": " + newDir);
         _hips.targetRotation = Quaternion.Euler(0, arcTangent, 0);
+    }
+
+    public void TakeDamage(float x)
+    {
+        _hp -= x;
+        //Debug.Log("TakeDamage function called");
     }
 }
