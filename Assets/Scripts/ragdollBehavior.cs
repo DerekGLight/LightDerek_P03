@@ -5,11 +5,12 @@ using UnityEngine;
 public class ragdollBehavior : MonoBehaviour
 {
     [SerializeField] public string _team;
-    [SerializeField] private float _rotationSpeed = 6;
+    //[SerializeField] private float _rotationSpeed = 6;
     [SerializeField] private SkinnedMeshRenderer _skin;
     [SerializeField] private Material _redColor;
     [SerializeField] private Material _blueColor;
     [SerializeField] private ConfigurableJoint _hips;
+    [SerializeField] private Animator _ragdollAnimator;
 
     private float angle = 90;
 
@@ -38,6 +39,11 @@ public class ragdollBehavior : MonoBehaviour
         {
             //Debug.Log(closestEnemy.name);
             LookAtObject(closestEnemy.transform.GetChild(0).GetChild(1));
+            _ragdollAnimator.SetBool("isWalking", true);
+        }
+        else
+        {
+            _ragdollAnimator.SetBool("isWalking", false);
         }
         if (Input.GetKey(KeyCode.F))
         {
@@ -65,6 +71,14 @@ public class ragdollBehavior : MonoBehaviour
                 {
                     closest = enemy;
                     distanceToClosest = currentDistance;
+                    if (distanceToClosest <= 2)
+                    {
+                        _ragdollAnimator.SetBool("isPunching", true);
+                    }
+                    else
+                    {
+                        _ragdollAnimator.SetBool("isPunching", false);
+                    }
                 }
             }
             return closest;
@@ -85,7 +99,14 @@ public class ragdollBehavior : MonoBehaviour
                 {
                     closest = enemy;
                     distanceToClosest = currentDistance;
-                    //Debug.Log("Distance To Closest: " + distanceToClosest);
+                    if(distanceToClosest <= 2)
+                    {
+                        _ragdollAnimator.SetBool("isPunching", true);
+                    }
+                    else
+                    {
+                        _ragdollAnimator.SetBool("isPunching", false);
+                    }
                 }
             }
             return closest;
