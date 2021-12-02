@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ragdollBehavior : MonoBehaviour
 {
     [SerializeField] public string _team;
+    [SerializeField] private string _enemyTeam;
     //[SerializeField] private float _rotationSpeed = 6;
     [SerializeField] private SkinnedMeshRenderer _skin;
     [SerializeField] private Material _redColor;
@@ -15,6 +18,12 @@ public class ragdollBehavior : MonoBehaviour
     [SerializeField] private AudioClip _hit1;
     [SerializeField] private AudioClip _hit2;
     [SerializeField] private AudioClip _death;
+    [SerializeField] private AudioClip _victory;
+    [SerializeField] AudioSource _musicPlayer;
+
+    [SerializeField] Text _teamVictoryText;
+    [SerializeField] Text _defeatedTeamTeamText;
+    [SerializeField] GameObject _Canvas;
 
     public float _hp = 100;
 
@@ -31,9 +40,11 @@ public class ragdollBehavior : MonoBehaviour
         {
             case "Red":
                 _skin.material = _redColor;
+                _enemyTeam = "Blue";
                 break;
             case "Blue":
                 _skin.material = _blueColor;
+                _enemyTeam = "Red";
                 break;
         }
     }
@@ -46,7 +57,7 @@ public class ragdollBehavior : MonoBehaviour
         if(closestEnemy != null && closestEnemy.tag != "Dead" && gameObject.tag != "Dead")
         {
             //Debug.Log(closestEnemy.name);
-            LookAtObject(closestEnemy.transform.GetChild(0).GetChild(1));
+            LookAtObject(closestEnemy.transform.GetChild(0).GetChild(1)); //Look at the object
             _ragdollAnimator.SetBool("isWalking", true);
         }
         else
@@ -157,8 +168,15 @@ public class ragdollBehavior : MonoBehaviour
         Collapse();
         _ragdollAnimator.SetBool("isWalking", false);
         _ragdollAnimator.SetBool("isPunching", false);
+
+        _teamVictoryText.text = _enemyTeam.ToUpper() + " VICTORY!";
+        _defeatedTeamTeamText.text = "Defeated " + _team + " Team";
+        _Canvas.SetActive(true);
+
         _thisSource.Stop();
         _thisSource.PlayOneShot(_death);
+        _musicPlayer.Stop();
+        _musicPlayer.PlayOneShot(_victory);
     }
     private void Collapse()
     {
