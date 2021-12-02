@@ -70,6 +70,10 @@ public class ragdollBehavior : MonoBehaviour
             _hips.targetRotation = Quaternion.Euler(0, angle, 0); //Testing rotation of fighters
             angle++;
         }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            SceneManager.LoadScene(0);
+        }
         if (_hips.transform.position.y < -200)
         {
             GameObject.Destroy(gameObject);
@@ -169,7 +173,8 @@ public class ragdollBehavior : MonoBehaviour
         _ragdollAnimator.SetBool("isWalking", false);
         _ragdollAnimator.SetBool("isPunching", false);
 
-        _teamVictoryText.text = _enemyTeam.ToUpper() + " VICTORY!";
+        _teamVictoryText.text = _enemyTeam.ToUpper();
+        _teamVictoryText.text += " VICTORY!";
         _defeatedTeamTeamText.text = "Defeated " + _team + " Team";
         _Canvas.SetActive(true);
 
